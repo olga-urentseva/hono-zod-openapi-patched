@@ -1,0 +1,10 @@
+{
+  "extends": ["@tsconfig/node23/tsconfig", "@tsconfig/strictest/tsconfig"],
+  "include": ["**/*.ts"],
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "target": "ES2022"
+  }
+}
