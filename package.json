@@ -1,32 +1,46 @@
 {
   "name": "hono-zod-openapi-patch",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "The patch of hono-zod-openapi to support 8.3 Content-Type HTTP specification. It allows to work with any Media Type, not only json or form data like it was in the original hono-zod-openapi package.",
-  "main": "index.js",
-  "scripts": {
-    "build": "rm -rf ./dist && esbuild src/index.ts --bundle --packages=external --outdir=dist --target=node20 --platform=node --format=esm",
-    "typecheck": "tsc --noEmit"
-  },
-  "keywords": [
-    "hono",
-    "zod",
-    "openapi"
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
   ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "typecheck": "tsc"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
   "license": "ISC",
   "packageManager": "pnpm@10.6.0",
   "dependencies": {
-    "@asteasolutions/zod-to-openapi": "github:asteasolutions/zod-to-openapi",
+    "@asteasolutions/zod-to-openapi": "^7.3.0",
     "@hono/zod-validator": "^0.4.3",
-    "hono": "^4.7.4",
+    "hono": "^4.7.4"
+  },
+  "peerDependencies": {
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@tsconfig/node23": "^23.0.0",
     "@tsconfig/strictest": "^2.0.5",
     "@types/node": "^22.13.9",
-    "esbuild": "^0.25.0",
-    "openapi3-ts": "^4.4.0",
+    "tsup": "^8.4.0",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "zod": "^3.24.2"
   }
 }

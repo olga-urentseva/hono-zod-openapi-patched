@@ -3,7 +3,6 @@
 import type {
   ResponseConfig,
   RouteConfig as RouteConfigBase,
-  ZodContentObject,
   ZodMediaTypeObject,
   ZodRequestBody,
 } from "@asteasolutions/zod-to-openapi";
@@ -25,7 +24,7 @@ import type {
   Schema,
   ToSchema,
   TypedResponse,
-  ValidationTargets,
+  ValidationTargets as VT,
 } from "hono";
 
 import { createMiddleware } from "hono/factory";
@@ -51,6 +50,8 @@ import type { ZodError, ZodType } from "zod";
 import { z } from "zod";
 
 type MaybePromise<T> = Promise<T> | T;
+
+type ValidationTargets = Omit<VT, "json" | "form">;
 
 export type RouteConfig = Omit<RouteConfigBase, "request"> & {
   request?: Omit<NonNullable<RouteConfigBase["request"]>, "body"> & {
@@ -282,24 +283,20 @@ type RouteMiddlewareParams<R extends RouteConfig> = OfHandlerType<
 
 type BodyValidationMiddlewareEnv<R extends RouteConfig> = {
   Variables: {
-    validatedBody: R["request"] extends RequestTypes
-      ? R["request"]["body"] extends ZodRequestBody
-        ? R["request"]["body"]["content"] extends ZodContentObject
-          ? {
-              [K in keyof R["request"]["body"]["content"]]: {
-                mediaType: K;
-                data: z.infer<
-                  R["request"]["body"]["content"][K] extends {
-                    schema: ZodType<unknown>;
-                  }
-                    ? R["request"]["body"]["content"][K]["schema"]
-                    : never
-                >;
-              };
-            }[keyof R["request"]["body"]["content"]]
-          : never
-        : never
-      : never;
+    validatedBody: {
+      [K in keyof NonNullable<NonNullable<R["request"]>["body"]>["content"]]: {
+        mediaType: K;
+        data: z.infer<
+          NonNullable<NonNullable<R["request"]>["body"]>["content"][K] extends {
+            schema: ZodType<unknown>;
+          }
+            ? NonNullable<
+                NonNullable<R["request"]>["body"]
+              >["content"][K]["schema"]
+            : never
+        >;
+      };
+    }[keyof NonNullable<NonNullable<R["request"]>["body"]>["content"]];
   };
 };
 
@@ -519,9 +516,6 @@ export class OpenAPIHono<
 
     const bodyContent = route.request?.body?.content;
 
-    // const bodyValidationMiddleware = createMiddleware<
-    //   BodyValidationMiddlewareEnv<R>
-    // >(async (c, next) => {
     const bodyValidationMiddleware = createMiddleware(async (c, next) => {
       if (!bodyContent) {
         await next();
@@ -537,7 +531,6 @@ export class OpenAPIHono<
       }
 
       const mediaType = contentType.split(";")[0]!.trim();
-
       const schema = bodyContent[mediaType]?.schema;
 
       if (!schema) {
@@ -610,7 +603,7 @@ export class OpenAPIHono<
     return this;
   };
 
-  getOpenAPIDocument = (
+  private getOpenAPIDocument = (
     config: OpenAPIObjectConfig
   ): ReturnType<typeof generator.generateDocument> => {
     const generator = new OpenApiGeneratorV3(this.openAPIRegistry.definitions);
@@ -622,7 +615,7 @@ export class OpenAPIHono<
       : document;
   };
 
-  getOpenAPI31Document = (
+  private getOpenAPI31Document = (
     config: OpenAPIObjectConfig
   ): ReturnType<typeof generator.generateDocument> => {
     const generator = new OpenApiGeneratorV31(this.openAPIRegistry.definitions);
