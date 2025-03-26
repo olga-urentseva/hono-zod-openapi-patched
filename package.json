@@ -1,7 +1,7 @@
 {
-  "name": "hono-zod-openapi-patch",
+  "name": "hono-zod-openapi-patched",
   "version": "0.0.1",
-  "description": "The patch of hono-zod-openapi to support 8.3 Content-Type HTTP specification. It allows to work with any Media Type, not only json or form data like it was in the original hono-zod-openapi package.",
+  "description": "The patched version of hono-zod-openapi to support 8.3 Content-Type HTTP specification. Now it supports any media type and any quantity of media types in request bodies and properly validates the incoming content based on the specified media type and schema",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
