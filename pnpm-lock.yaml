@@ -14,9 +14,6 @@ importers:
       '@hono/zod-validator':
         specifier: ^0.4.3
         version: 0.4.3(hono@4.7.4)(zod@3.24.2)
-      hono:
-        specifier: ^4.7.4
-        version: 4.7.4
     devDependencies:
       '@tsconfig/node23':
         specifier: ^23.0.0
@@ -27,6 +24,9 @@ importers:
       '@types/node':
         specifier: ^22.13.9
         version: 22.13.9
+      hono:
+        specifier: ^4.7.4
+        version: 4.7.4
       tsup:
         specifier: ^8.4.0
         version: 8.4.0(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)

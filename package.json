@@ -1,6 +1,6 @@
 {
   "name": "hono-zod-openapi-patched",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The patched version of hono-zod-openapi to support 8.3 Content-Type HTTP specification. Now it supports any media type and any quantity of media types in request bodies and properly validates the incoming content based on the specified media type and schema",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -29,16 +29,17 @@
   "packageManager": "pnpm@10.6.0",
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^7.3.0",
-    "@hono/zod-validator": "^0.4.3",
-    "hono": "^4.7.4"
+    "@hono/zod-validator": "^0.4.3"
   },
   "peerDependencies": {
+    "hono": "^4.7.4",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@tsconfig/node23": "^23.0.0",
     "@tsconfig/strictest": "^2.0.5",
     "@types/node": "^22.13.9",
+    "hono": "^4.7.4",
     "tsup": "^8.4.0",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
